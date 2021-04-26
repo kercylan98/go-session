@@ -1,6 +1,10 @@
 package session
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+	"time"
+)
 
 var sm = NewManager()
 
@@ -42,4 +46,16 @@ func TestManager_GetSession(t *testing.T) {
 	sm.RegisterSession("test-0001")
 
 	t.Log(sm.GetSession("test-0001"))
+}
+
+func TestManager_SetExpire(t *testing.T) {
+	sm.SetExpire(2 * time.Second)
+	for i := 0; i < 10; i++ {
+		time.Sleep(1 * time.Second)
+		sm.RegisterSession(fmt.Sprint("test-000", i))
+		t.Log("======#+===========#+===========#+===========#+===========#+===========#+===========#+=====")
+		for _, s := range sm.GetAllSession() {
+			t.Log(s)
+		}
+	}
 }

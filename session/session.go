@@ -1,6 +1,9 @@
 package session
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 // 会话实现
 type Session interface {
@@ -16,23 +19,38 @@ type Session interface {
 	Close()
 	// 获取会话管理器
 	GetSessionManager() Manager
+	// 是否已过期
+	IsExpire() bool
+	// 设置过期时间
+	setExpire(expire time.Duration)
 }
 
-
 // 构建一个新的会话
-func newSession(sm Manager, sessionId string) *session {
+func newSession(sm Manager, sessionId string, expireTime time.Duration) *session {
 	return &session{
-		id: sessionId,
-		sm: sm,
-		storage: map[interface{}]interface{}{},
+		id:          sessionId,
+		sm:          sm,
+		storage:     map[interface{}]interface{}{},
+		createdTime: time.Now(),
+		expireTime:  expireTime,
 	}
 }
 
 // 会话结构
 type session struct {
-	id      string
-	sm      Manager
-	storage map[interface{}]interface{}
+	id          string
+	sm          Manager
+	storage     map[interface{}]interface{}
+	createdTime time.Time
+	expireTime  time.Duration
+}
+
+func (slf *session) setExpire(expire time.Duration) {
+	slf.expireTime = expire
+}
+
+func (slf *session) IsExpire() bool {
+	return slf.expireTime != 0 && time.Now().Sub(slf.createdTime).Milliseconds() > slf.expireTime.Milliseconds()
 }
 
 func (slf *session) Store(key interface{}, data interface{}) {
@@ -61,5 +79,3 @@ func (slf *session) GetSessionManager() Manager {
 func (slf *session) GetId() string {
 	return slf.id
 }
-
-

@@ -45,7 +45,7 @@ func (slf *manager) SetExpire(expire time.Duration) error {
 		slf.expire = 0
 	}
 	for _, session := range slf.sessions {
-		if err := session.setExpire(slf.expire); err != nil {
+		if err := session.SetExpire(slf.expire); err != nil {
 			return err
 		}
 	}

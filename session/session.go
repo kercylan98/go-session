@@ -22,7 +22,7 @@ type Session interface {
 	// 是否已过期
 	IsExpire() bool
 	// 设置过期时间
-	setExpire(expire time.Duration) error
+	SetExpire(expire time.Duration) error
 }
 
 // 构建一个新的会话
@@ -45,7 +45,7 @@ type session struct {
 	expireTime  time.Duration
 }
 
-func (slf *session) setExpire(expire time.Duration) error {
+func (slf *session) SetExpire(expire time.Duration) error {
 	slf.expireTime = expire
 	return nil
 }

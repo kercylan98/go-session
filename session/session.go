@@ -10,11 +10,11 @@ type Session interface {
 	// 获取会话ID
 	GetId() string
 	// 向会话中存储数据
-	Store(key interface{}, data interface{})
+	Store(key interface{}, data interface{}) error
 	// 加载会话中的数据
 	Load(key interface{}) (interface{}, error)
 	// 删除会话中的数据
-	Del(key interface{})
+	Del(key interface{}) error
 	// 结束会话
 	Close()
 	// 获取会话管理器
@@ -22,7 +22,7 @@ type Session interface {
 	// 是否已过期
 	IsExpire() bool
 	// 设置过期时间
-	setExpire(expire time.Duration)
+	setExpire(expire time.Duration) error
 }
 
 // 构建一个新的会话
@@ -45,16 +45,18 @@ type session struct {
 	expireTime  time.Duration
 }
 
-func (slf *session) setExpire(expire time.Duration) {
+func (slf *session) setExpire(expire time.Duration) error {
 	slf.expireTime = expire
+	return nil
 }
 
 func (slf *session) IsExpire() bool {
 	return slf.expireTime != 0 && time.Now().Sub(slf.createdTime).Milliseconds() > slf.expireTime.Milliseconds()
 }
 
-func (slf *session) Store(key interface{}, data interface{}) {
+func (slf *session) Store(key interface{}, data interface{}) error {
 	slf.storage[key] = data
+	return nil
 }
 
 func (slf *session) Load(key interface{}) (interface{}, error) {
@@ -64,8 +66,9 @@ func (slf *session) Load(key interface{}) (interface{}, error) {
 	return nil, errors.New("can not found session value with key")
 }
 
-func (slf *session) Del(key interface{}) {
+func (slf *session) Del(key interface{}) error {
 	delete(slf.storage, key)
+	return nil
 }
 
 func (slf *session) Close() {

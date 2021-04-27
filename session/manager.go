@@ -11,15 +11,15 @@ import (
 // 可供给各种用途使用session管理
 type Manager interface {
 	// 注册一个新的会话
-	RegisterSession(sessionId string) Session
+	RegisterSession(sessionId string) (Session, error)
 	// 注销一个会话
-	UnRegisterSession(session Session)
+	UnRegisterSession(session Session) error
 	// 获取所有会话
-	GetAllSession() []Session
+	GetAllSession() ([]Session, error)
 	// 获取特定id的会话
 	GetSession(sessionId string) (Session, error)
 	// 设置会话过期时间（默认 0, 永不过期）
-	SetExpire(expire time.Duration)
+	SetExpire(expire time.Duration) error
 }
 
 func NewManager() *manager {
@@ -35,7 +35,7 @@ type manager struct {
 	sessions map[string]Session
 }
 
-func (slf *manager) SetExpire(expire time.Duration) {
+func (slf *manager) SetExpire(expire time.Duration) error {
 	slf.clearExpire()
 	slf.Lock()
 	slf.expire = expire
@@ -46,27 +46,29 @@ func (slf *manager) SetExpire(expire time.Duration) {
 		session.setExpire(slf.expire)
 	}
 	slf.Unlock()
+	return nil
 }
 
-func (slf *manager) RegisterSession(sessionId string) Session {
+func (slf *manager) RegisterSession(sessionId string) (Session, error) {
 	slf.Lock()
 	defer slf.Unlock()
 	if session, exist := slf.sessions[sessionId]; exist {
-		return session
+		return session, nil
 	} else {
 		session = newSession(slf, sessionId, slf.expire)
 		slf.sessions[sessionId] = session
-		return session
+		return session, nil
 	}
 }
 
-func (slf *manager) UnRegisterSession(session Session) {
+func (slf *manager) UnRegisterSession(session Session) error {
 	slf.Lock()
 	delete(slf.sessions, session.GetId())
 	slf.Unlock()
+	return nil
 }
 
-func (slf *manager) GetAllSession() []Session {
+func (slf *manager) GetAllSession() ([]Session, error) {
 	slf.clearExpire()
 	slf.Lock()
 	defer slf.Unlock()
@@ -76,7 +78,7 @@ func (slf *manager) GetAllSession() []Session {
 			sessions = append(sessions, session)
 		}
 	}
-	return sessions
+	return sessions, nil
 }
 
 func (slf *manager) GetSession(sessionId string) (Session, error) {

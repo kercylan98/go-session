@@ -16,7 +16,7 @@ type Session interface {
 	// 删除会话中的数据
 	Del(key interface{}) error
 	// 结束会话
-	Close()
+	Close() error
 	// 获取会话管理器
 	GetSessionManager() Manager
 	// 是否已过期
@@ -71,8 +71,8 @@ func (slf *session) Del(key interface{}) error {
 	return nil
 }
 
-func (slf *session) Close() {
-	slf.sm.UnRegisterSession(slf)
+func (slf *session) Close() error {
+	return slf.sm.UnRegisterSession(slf)
 }
 
 func (slf *session) GetSessionManager() Manager {

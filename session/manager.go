@@ -36,14 +36,18 @@ type manager struct {
 }
 
 func (slf *manager) SetExpire(expire time.Duration) error {
-	slf.clearExpire()
+	if err := slf.clearExpire(); err != nil {
+		return err
+	}
 	slf.Lock()
 	slf.expire = expire
 	if slf.expire < 0 {
 		slf.expire = 0
 	}
 	for _, session := range slf.sessions {
-		session.setExpire(slf.expire)
+		if err := session.setExpire(slf.expire); err != nil {
+			return err
+		}
 	}
 	slf.Unlock()
 	return nil
@@ -69,7 +73,9 @@ func (slf *manager) UnRegisterSession(session Session) error {
 }
 
 func (slf *manager) GetAllSession() ([]Session, error) {
-	slf.clearExpire()
+	if err := slf.clearExpire(); err != nil {
+		return nil, err
+	}
 	slf.Lock()
 	defer slf.Unlock()
 	var sessions []Session
@@ -82,7 +88,9 @@ func (slf *manager) GetAllSession() ([]Session, error) {
 }
 
 func (slf *manager) GetSession(sessionId string) (Session, error) {
-	slf.clearExpire()
+	if err := slf.clearExpire(); err != nil {
+		return nil, err
+	}
 	slf.Lock()
 	defer slf.Unlock()
 	if session, exist := slf.sessions[sessionId]; exist {
@@ -95,10 +103,13 @@ func (slf *manager) GetSession(sessionId string) (Session, error) {
 }
 
 // 清理过期
-func (slf *manager) clearExpire() {
+func (slf *manager) clearExpire() error {
 	for _, session := range slf.sessions {
 		if session.IsExpire() {
-			slf.UnRegisterSession(session)
+			if err := slf.UnRegisterSession(session); err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }

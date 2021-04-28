@@ -85,10 +85,14 @@ func (slf *managerRedis) GetAllSession() ([]Session, error) {
 		return nil, err
 	}
 
-	var sessions = make([]Session, len(keys))
-	for i := 0; i < len(keys); i++ {
-		sessions[i] = newSessionRedis(slf, keys[i], slf.formatKey(keys[i]), slf.redis)
+	var sessions []Session
+	for _, key := range keys {
+		if strings.Contains(key, managerLock) {
+			continue
+		}
+		sessions = append(sessions, newSessionRedis(slf, key, slf.formatKey(key), slf.redis))
 	}
+
 	return sessions, nil
 }
 

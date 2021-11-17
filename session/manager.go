@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// 会话管理器实现
+// Manager 会话管理器实现
 //
 // 可供给各种用途使用session管理
 type Manager interface {

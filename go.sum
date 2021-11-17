@@ -35,6 +35,8 @@ github.com/kercylan98/kkit-core v0.0.0-20210426063015-2782d26ac5d3 h1:nO7YIgOr5s
 github.com/kercylan98/kkit-core v0.0.0-20210426063015-2782d26ac5d3/go.mod h1:f+LIbv6EZmnsWq7A7yQc4RhBHe3qu1t/rtTd/OU5Yx4=
 github.com/kercylan98/kkit-core v0.0.0-20210426084449-5aa215579260 h1:tM74S2Dly0zaDYB/jAwUcfQC79auPgBF35S+5c4dyBw=
 github.com/kercylan98/kkit-core v0.0.0-20210426084449-5aa215579260/go.mod h1:f+LIbv6EZmnsWq7A7yQc4RhBHe3qu1t/rtTd/OU5Yx4=
+github.com/kercylan98/klib v1.0.1-beta h1:HnPkslW16lNS3W/OPRL2DStMet7nTXHhCpzwFSH9rjw=
+github.com/kercylan98/klib v1.0.1-beta/go.mod h1:1Zil3OL4iz4BDUSiG1xQ+E85nY1swORYJHA6bmPjot4=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=

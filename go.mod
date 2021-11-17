@@ -1,4 +1,4 @@
-module github.com/kercylan98/kkit-session
+module github.com/kercylan98/go-session
 
 go 1.16
 
